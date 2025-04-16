@@ -1,0 +1,75 @@
+import pandas as pd
+import numpy as np
+import random
+
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report, accuracy_score
+
+# Step 1: Generate Synthetic Data
+phases = ['Initiation', 'Planning', 'Execution', 'Closure']
+descriptions = {
+    'Initiation': [
+        'Conducting feasibility study for new project',
+        'Identifying key stakeholders',
+        'Defining initial project scope',
+        'Preparing business case for proposal',
+        'Appraising project risk and strategic alignment'
+    ],
+    'Planning': [
+        'Developing project charter and detailed plan',
+        'Estimating costs and resource requirements',
+        'Defining tasks, dependencies and schedule',
+        'Creating work breakdown structure (WBS)',
+        'Setting quality metrics and procurement strategies'
+    ],
+    'Execution': [
+        'Managing project resources and timelines',
+        'Coordinating project team to meet deliverables',
+        'Executing tasks as per project plan',
+        'Monitoring scope and resolving conflicts',
+        'Communicating progress to stakeholders'
+    ],
+    'Closure': [
+        'Conducting post-implementation review',
+        'Releasing project resources',
+        'Documenting lessons learned',
+        'Finalizing contracts and administrative closure',
+        'Archiving project documents'
+    ]
+}
+
+# Create DataFrame with synthetic samples
+data = []
+for label, texts in descriptions.items():
+    for _ in range(50):  # 50 samples per phase
+        data.append({
+            'description': random.choice(texts),
+            'phase': label
+        })
+
+df = pd.DataFrame(data)
+
+# Step 2: Split Data
+X_train, X_test, y_train, y_test = train_test_split(df['description'], df['phase'], test_size=0.2, random_state=42)
+
+# Step 3: Build Classifier Pipeline
+pipeline = Pipeline([
+    ('tfidf', TfidfVectorizer()),
+    ('clf', LogisticRegression(solver='liblinear', multi_class='ovr'))
+])
+
+# Step 4: Train Model
+pipeline.fit(X_train, y_train)
+
+# Step 5: Evaluate Model
+y_pred = pipeline.predict(X_test)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Classification Report:\n", classification_report(y_test, y_pred))
+
+# Optional: Predict on new input
+new_description = ["Team is closing out the project and collecting feedback"]
+prediction = pipeline.predict(new_description)
+print("Predicted Phase:", prediction[0])
