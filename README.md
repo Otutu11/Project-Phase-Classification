@@ -64,8 +64,7 @@ new_description = ["Team is closing out the project and collecting feedback"]
 
 This project is open-source and free to use for educational and research purposes.
 
-
----
-
-Would you like me to save this as a downloadable `README.md` file too?
+Author Name: Otutu Anslem
+Github: https://github.com/Otutu11/
+LinkedIn: https://www.linkedin.com/in/otutu-anslem-53a687359/
 
